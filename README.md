@@ -10,3 +10,4 @@ to do :
 4. add board turn
 5. add revert move
 6. add play with a bot using a chess engine api
+7. add webSwing
