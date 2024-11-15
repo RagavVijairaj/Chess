@@ -10,20 +10,7 @@ import javax.swing.*;
 
 class board {
 
-
-	int[] from;
-	int[] to;
-	int buttonPresses;
-	JTextArea playerAStats = new JTextArea();
-	JTextArea playerBStats = new JTextArea();
-	JTextField textArea = new JTextField();
-	myButton[] button = new myButton[64];
-	Font customFont = new Font("Oxanium Medium", Font.BOLD, 18);
-	String[] initList = { "wR", "bR", "wN", "bN", "wB", "bB", "wQ", "bQ", "wK", "bK", "wP", "bP" };
-	String[][] grid;
-	Map<String, piece> pieceMap;
-	player wPlayer;
-	player bPlayer;
+	// pieces
 	rook wR;
 	rook bR;
 	pawn wP;
@@ -36,53 +23,51 @@ class board {
 	king bK;
 	queen wQ;
 	queen bQ;
+
+	//players
+	player wPlayer;
+	player bPlayer;
 	player playing;
+
+	//gui
 	Color white = Color.decode("#f0d9b5");
 	Color pastel = Color.decode("#b48963");
 	Color bg = Color.decode("#181414");
-	ActionListener buttonListener = new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			myButton clickedButton = (myButton) e.getSource();
-			buttonActionHandler(clickedButton.cor , clickedButton.ind);
-		}
+
+	Font turnFont = new Font("IMPACT", Font.PLAIN, 35);
+	Font playerFont = new Font("IMPACT", Font.PLAIN, 18);
+
+	myButton[] button;
+
+	JTextField textArea;
+	JTextArea playerAStats;
+	JTextArea playerBStats;
 
 
-	};
-	ActionListener textListener1= new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			JTextField textOut = (JTextField) e.getSource();
-			setwPlayerName(textOut.getText());
-			textOut.setText("Enter Black Player's Name: ");
-			textOut.removeActionListener(textListener1);
-			textOut.addActionListener(textListener2);
+	String[] initList = { "wR", "bR", "wN", "bN", "wB", "bB", "wQ", "bQ", "wK", "bK", "wP", "bP" };
+	String[][] grid;
+	Map<String, piece> pieceMap;
 
-		}
+	//action listener stuff
+	int[] from;
+	int[] to;
+	int buttonPresses;
 
-
-	};
-	ActionListener textListener2 = new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			JTextField textOut = (JTextField) e.getSource();
-			setbPlayerName(textOut.getText());
-			textOut.setText("Game Started");
-			textOut.removeActionListener(textListener2);
-			textOut.setEditable(false);
-
-
-        }
-
-
-	};
+	ActionListener textListener2;
+	ActionListener textListener1;
+	ActionListener buttonListener;
 
 	board() {
+
+		//gui
 		grid = new String[8][8];
+		button = new myButton[64];
+		//game
 		pieceMap = new HashMap<String, piece>();
 		bPlayer = new player("b");
 		wPlayer = new player("w");
 		playing = wPlayer;
+		//pieces
 		wR = new rook("w");
 		bR = new rook("b");
 		wP = new pawn("w");
@@ -96,9 +81,48 @@ class board {
 		wQ = new queen("w");
 		bQ = new queen("b");
 
+		//action listener
+		buttonListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				myButton clickedButton = (myButton) e.getSource();
+				buttonActionHandler(clickedButton.cor , clickedButton.ind);
+			}
+
+
+		};
+
+		textListener1= new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JTextField textOut = (JTextField) e.getSource();
+				setWPlayerName(textOut.getText());
+				textOut.setText("Enter Black Player's Name: ");
+				textOut.removeActionListener(textListener1);
+				textOut.addActionListener(textListener2);
+
+			}
+		};
+
+		textListener2 = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JTextField textOut = (JTextField) e.getSource();
+				setBPlayerName(textOut.getText());
+				textOut.setText("Game Started");
+				textOut.removeActionListener(textListener2);
+				textOut.setEditable(false);
+
+
+			}
+		};
+
+
 	}
 
 	void init() {
+
+		//for searcing later
 		pieceMap.put("wR", wR);
 		pieceMap.put("bR", bR);
 		pieceMap.put("wN", wN);
@@ -112,20 +136,25 @@ class board {
 		pieceMap.put("wP", wP);
 		pieceMap.put("bP", bP);
 
+		//sets all the boxes empty
 		for (int j = 0; j < 8; j++) {
 			for (int i = 0; i < 8; i++) {
 				grid[j][i] = " ";
 			}
 		}
 
+		//set the peices in their start position
 		for (String id : initList) {
 			for (int[] j : pieceMap.get(id).spwan) {
 				grid[j[0]][j[1]] = pieceMap.get(id).not;
 			}
 		}
+
 	}
 
 	void print() {
+
+
 		for (int j = 0; j < 8; j++) {
 			System.out.println();
 			System.out.print("|");
@@ -156,6 +185,7 @@ class board {
 		System.out.println();
 	}
 
+	//uses the peice map to get the peice from its not
 	piece getPiece(int[] cordinates) {
 
 		piece p;
@@ -165,15 +195,14 @@ class board {
 			if (grid[cordinates[0]][cordinates[1]].equals(pieceMap.get(id).not)) {
 				p = pieceMap.get(id);
 				return p;
-
-
 			}
-
 		}
 
 		return d;
 
 	}
+
+
 
 	boolean isCheck(String[][] grid, String c){
 
@@ -218,10 +247,14 @@ class board {
 		return false;
 	}
 
+
+	//working
 	boolean isGameover(String c){
 
 		return false;
 	}
+
+
 
 	boolean capture(int[] from, int to[]) {
 
@@ -252,17 +285,15 @@ class board {
 		}
 
 
-
-
 	}
 
-	void setbPlayerName(String wholeLine){
+	void setBPlayerName(String wholeLine){
 		bPlayer.playerName = wholeLine.substring(wholeLine.indexOf(":") +2);
 		bPlayer.printCaptureMessage();
 		playerBStats.setText(bPlayer.stats);
 	}
 
-	void setwPlayerName(String wholeLine){
+	void setWPlayerName(String wholeLine){
 
 		wPlayer.playerName = wholeLine.substring(wholeLine.indexOf(":") +2);
 		wPlayer.printCaptureMessage();
@@ -343,9 +374,6 @@ class board {
 
 				if(getPiece(cor).isValidMove(grid, cor, new int[]{i, j}, playing.color) && !getPiece(cor).color.equals(getPiece(new int[]{i, j}).color)) {
 
-
-
-
 						if(Arrays.equals(findButtonWihCor(new int[]{i, j}).cor, new int[]{i, j})){
 
 							findButtonWihCor(new int[]{i, j}).addActionListener(buttonListener);
@@ -401,66 +429,80 @@ class board {
 		
 		}
 
-	void startGui() {
+	void guiInit() {
 
 
-		 Font defaultFont = new Font("Oxanium Medium", Font.BOLD, 35);
-		 JFrame frame = new JFrame();
+		 JFrame frame = new JFrame();  //the entire screen
+
 		 frame.setSize(600, 620);
 		 frame.setLayout(new BorderLayout(0, 0));
 		 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		 frame.setTitle("Duppi's Chess");
+		 frame.setIconImage(new ImageIcon(getClass().getResource("/kb.png")).getImage());
 		 frame.setResizable(false);
+		 frame.setBackground(bg);
+
+		 textArea = new JTextField(); // shows player turn
 
 		 textArea.setPreferredSize(new Dimension(600, 90));
-		 textArea.setFont(defaultFont);
-		 textArea.setBorder(BorderFactory.createEmptyBorder(20, 15, -1, 5));
-		 frame.add(textArea, BorderLayout.NORTH);
+		 textArea.setFont(turnFont);
+		 textArea.setBorder(BorderFactory.createEmptyBorder(10, 15, 1, 5));
+		 textArea.setForeground(white);
+		 textArea.setBackground(bg);
+		 textArea.setEditable(true);
+		 textArea.setText("Enter White Player's Name: ");
+		 textArea.addActionListener(textListener1);
 
-		 JPanel piecePanel = new JPanel();
+
+		 JPanel piecePanel = new JPanel();//holds all the peices
+
 		 piecePanel.setLayout(new GridLayout(8, 8, 0, 0));
 		 piecePanel.setPreferredSize(new Dimension(500, 500));
-		 piecePanel.setBorder(BorderFactory.createEmptyBorder(9, 10, 6, 10));
-		 piecePanel.setBackground(Color.lightGray);
+		 piecePanel.setBorder(BorderFactory.createEmptyBorder(9, 9, 9, 16));
+		 piecePanel.setBackground(bg);
 
-		 JPanel playerPanel = new JPanel(new GridLayout(2, 1));
+		 JPanel playerPanel = new JPanel(new GridLayout(2, 1, 20, 0)); // holds all the stats
+
+		 playerPanel.setBackground(bg);
 		 playerPanel.setPreferredSize(new Dimension(100, 600));
-		 playerPanel.setBackground(Color.lightGray);
+		 playerPanel.setBackground(bg);
 
+
+		 playerAStats = new JTextArea();// player A stats
+
+		 playerAStats.setBorder(BorderFactory.createEmptyBorder(5,5,5,0));
 		 playerAStats.setLineWrap(true);
 		 playerAStats.setWrapStyleWord(true);
+		 playerAStats.setFont(playerFont);
 		 playerAStats.setEditable(true);
-		 playerBStats.setFont(customFont);
-		 playerAStats.setFont(customFont);
+		 playerAStats.setPreferredSize(new Dimension(100, 260));
+		 playerAStats.setBackground(bg);
+		 playerAStats.setForeground(white);
+		 playerAStats.setEditable(false);
+
+
+		 playerBStats = new JTextArea();// player B stats
+
+		 playerBStats.setBorder(BorderFactory.createEmptyBorder(5,5,5,0));
 		 playerBStats.setLineWrap(true);
 		 playerBStats.setWrapStyleWord(true);
+		 playerBStats.setFont(playerFont);
 		 playerBStats.setEditable(true);
-
-		 playerAStats.setPreferredSize(new Dimension(100, 260));
 		 playerBStats.setPreferredSize(new Dimension(100, 260));
-		 playerAStats.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-		 playerPanel.add(playerAStats, BorderLayout.SOUTH);
-		 playerPanel.add(playerBStats, BorderLayout.NORTH);
-
-		 JPanel containerPanel = new JPanel(new BorderLayout(0, 0));
-		 containerPanel.setBorder(null);
-		 containerPanel.add(piecePanel, BorderLayout.CENTER);
-		 containerPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 2, 0));
-		 frame.add(containerPanel, BorderLayout.WEST);
-		 frame.add(playerPanel, BorderLayout.EAST);
-
-		 containerPanel.setBackground(bg);
-		 playerPanel.setBackground(bg);
-		 piecePanel.setBackground(bg);
-		 textArea.setBackground(bg);
-		 playerBStats.setBackground(bg);
-		 playerAStats.setBackground(bg);
-
-		 textArea.setForeground(white);
+	  	 playerBStats.setBackground(bg);
 		 playerBStats.setForeground(white);
-		 playerAStats.setForeground(white);
+		 playerBStats.setEditable(false);
 
 
+		 playerPanel.add(playerAStats, BorderLayout.NORTH);
+		 playerPanel.add(playerBStats, BorderLayout.SOUTH);
+
+
+		 frame.add(playerPanel, BorderLayout.EAST);
+		 frame.add(textArea, BorderLayout.NORTH);
+		 frame.add(piecePanel, BorderLayout.WEST);
+
+		 // inits the button's color and icon for the start of the game
 		 int i = 0;
 		 for (int j = 0; j < 8; j++) {
 			 for (int k = 0; k < 8; k++) {
@@ -496,19 +538,15 @@ class board {
 		 }
 
 
+		 //inits player's stats
 		 wPlayer.printCaptureMessage();
 		 bPlayer.printCaptureMessage();
-
+		 //add the stats to text box
 		 playerAStats.setText(wPlayer.stats);
 		 playerBStats.setText(bPlayer.stats);
 
 		 frame.setVisible(true);
 
-		 playerBStats.setEditable(false);
-		 playerAStats.setEditable(false);
-		 textArea.setEditable(true);
-		 textArea.setText("Enter White Player's Name: ");
-		 textArea.addActionListener(textListener1);
 	 }
 
 }

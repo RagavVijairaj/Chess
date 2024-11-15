@@ -65,8 +65,6 @@ class rook extends piece{
                 }
             }
             
-             
-            
 
 
         }
