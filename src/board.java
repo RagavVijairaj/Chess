@@ -219,52 +219,7 @@ class board {
 	}
 
 	boolean isGameover(String c){
-		// if(isCheck(grid, c)){
-		// 	ArrayList<Integer[]> peicesToCheck= new ArrayList<>();
-		// 	for (int i = 0; i < 8; i++) {
-		// 		for (int j = 0; j < 8; j++) {
-		// 			boolean isPeiceOnGrid = c.equals("w") ? grid[i][j].equals("B") || grid[i][j].equals("P") || grid[i][j].equals("R") || grid[i][j].equals("N") || grid[i][j].equals("Q")  : grid[i][j].equals("p") || grid[i][j].equals("r") || grid[i][j].equals("n") || grid[i][j].equals("b") || grid[i][j].equals("q");
-		// 			if(isPeiceOnGrid) {
-		// 				peicesToCheck.add(new Integer[]{i,j});
 
-		// 			}
-		// 		}
-		// 	}
-
-		// 	for(Integer[] isCheck : peicesToCheck){
-
-
-		// 		piece toCheck = getPiece(new int[] {isCheck[0], isCheck[1]});
-
-		// 		for (int i = 0; i < 8; i++) {
-		// 			for (int j = 0; j < 8; j++) {
-
-		// 					boolean isMoveRemoveCheck = false;
-		// 					board test = new board();
-		// 					test.init();
-		// 					test.grid = Arrays.copyOf(grid, grid.length);
-		// 					for (int k = 0; i < grid.length; i++){
-		// 						test.grid[k] = Arrays.copyOf(grid[i], grid[1].length);
-		// 					}
-
-		// 					test.capture(new int[]{isCheck[0], isCheck[1]}, new int[]{i, j});
-		// 					test.print();
-
-		// 					 isMoveRemoveCheck = !test.isCheck(test.grid,c);
-
-
-
-		// 				if(toCheck.isValidMove(grid, new int[] {isCheck[0], isCheck[1]},new int[] {i,j} , toCheck.color) && isMoveRemoveCheck) return false;
-		// 			}
-		// 		}
-
-		// 	}
-
-
-
-		// }else{
-		// 	return true;
-		// }
 		return false;
 	}
 
@@ -313,92 +268,6 @@ class board {
 		wPlayer.printCaptureMessage();
 		playerAStats.setText(wPlayer.stats);
 	}
-
-//	void startGame(){
-
-
-
-
-
-
-
-
-
-
-
-
-
-//		while(!isGameover(lastPlayed.color))
-//
-//			{
-//				if (lastPlayed == bPlayer) { // white playing
-//					lastPlayed = wPlayer;
-//
-//				} else {                    // black playing
-//					lastPlayed = bPlayer;
-//
-//				}
-//
-//				Scanner in = new Scanner(System.in);
-//				System.out.println("Enter X value of the piece you want to move");
-//				int fromX = in.nextInt();
-//				System.out.println("Enter Y value of the piece you want to move");
-//				int fromY = in.nextInt();
-//				System.out.println("Enter X value of the box you want to move to");
-//				int toX = in.nextInt();
-//				System.out.println("Enter Y value of the Box you want to move to");
-//				int toY = in.nextInt();
-//
-//				boolean isMoveRemoveCheck = false;
-//				String c = lastPlayed == bPlayer ? bPlayer.color : wPlayer.color;
-//
-//				player f = new player(c);
-//				if (isCheck(grid, f.color)) {
-//					board test = new board();
-//					test.init();
-//					test.grid = Arrays.copyOf(grid, grid.length);
-//					for (int i = 0; i < grid.length; i++) {
-//						test.grid[i] = Arrays.copyOf(grid[i], grid[1].length);
-//					}
-//
-//					test.capture(new int[]{fromX, fromY}, new int[]{toX, toY});
-//					test.print();
-//
-//					isMoveRemoveCheck = !test.isCheck(test.grid, c);
-//
-//				} else {
-//					isMoveRemoveCheck = true;
-//				}
-//
-//
-//				if (isMoveRemoveCheck) {
-//
-//					player p = lastPlayed == bPlayer ? wPlayer : bPlayer;
-//					if (!grid[toX][toY].equals(" ")) {
-//
-//						lastPlayed.capturePeice(getPiece(new int[]{toX, toY}));
-//						lastPlayed.printCaptureMessage();
-//					}
-//					capture(new int[]{fromX, fromY}, new int[]{toX, toY});
-//
-//
-//				} else {
-//					System.out.println("invalid Valid Move");
-//					if (lastPlayed == bPlayer) { // white playing
-//						lastPlayed = wPlayer;
-//
-//					} else {                    // black playing
-//						lastPlayed = bPlayer;
-//
-//					}
-//				}
-//
-//
-//
-//
-//
-//			}
-//		}
 
 	void turnHandler(){
 		if(playing == bPlayer){
@@ -570,8 +439,8 @@ class board {
 		 playerAStats.setPreferredSize(new Dimension(100, 260));
 		 playerBStats.setPreferredSize(new Dimension(100, 260));
 		 playerAStats.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-		 playerPanel.add(playerAStats, BorderLayout.NORTH);
-		 playerPanel.add(playerBStats, BorderLayout.SOUTH);
+		 playerPanel.add(playerAStats, BorderLayout.SOUTH);
+		 playerPanel.add(playerBStats, BorderLayout.NORTH);
 
 		 JPanel containerPanel = new JPanel(new BorderLayout(0, 0));
 		 containerPanel.setBorder(null);

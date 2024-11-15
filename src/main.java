@@ -7,7 +7,6 @@ public class main {
 		b.init();
 		b.print();
 		b.printCor();
-
 		b.startGui();
 
 
