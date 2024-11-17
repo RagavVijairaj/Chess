@@ -423,7 +423,7 @@ class board {
 
 			}
 		}
-
+		findButtonWihCor(cor).setBackground(new Color(255, 238, 140));
 		return validMoves;
 	}
 
@@ -471,6 +471,7 @@ class board {
 
 
 		if(buttonPresses == 1 ){
+			resetEveryButton();
 			button[ind].removeActionListener(buttonListener);
 			from = cor;
 			System.out.println("button press is one");
@@ -489,11 +490,13 @@ class board {
 
 
 			if(getPiece(from).color.equals(getPiece(to).color)){
+				System.out.println("same color");
 				resetEveryButton();
 				setOneColorTOActive();
 				setValidMovesActive(from, ind);
 
 			}else {
+				System.out.println("diff color");
 				capture(from, to);
 				print();
 				printCor();
