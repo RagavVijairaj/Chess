@@ -52,6 +52,8 @@ class board {
 	ActionListener textListener2;
 	ActionListener textListener1;
 	ActionListener buttonListener;
+	Boolean isSameColorButtonClicked = true;
+	Boolean gameFirstmove = true;
 
 	board() {
 
@@ -83,6 +85,7 @@ class board {
 	void guiInit(){
 
 		//action listener
+
 		buttonListener = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -330,29 +333,19 @@ class board {
 	}
 
 	void resetEveryButton(){
-		int i = 0;
-		for (int j = 0; j < 8; j++) {
-			for (int k = 0; k < 8; k++) {
 
-				if ((j + k) % 2 == 0) {
-					button[i].setBackground(white);
-				} else {
-					button[i].setBackground(pastel);
-				}
-
-				// If there is a piece to add, set the icon
-				if (!grid[j][k].equals(" ")) {
-					ImageIcon pieceIcon = getPiece(new int[]{j, k}).icon;
-					Image scaledImage = pieceIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-					ImageIcon resizedIcon = new ImageIcon(scaledImage);
-					button[i].setIcon(resizedIcon);
-				}else{
-					button[i].setIcon(null);
-				}
-				button[i].removeActionListener(buttonListener);
-				System.out.println(Arrays.toString(button[i].cor) +  " ACTION LISTENER remvoed at resetEveryButton");
-				i++;
+		for (int j = 0; j < 64; j++) {
+			button[j].setBackground(button[j].bg);
+			if (!grid[button[j].cor[0]][button[j].cor[1]].equals(" ")) {
+				ImageIcon pieceIcon = getPiece(button[j].cor).icon;
+				Image scaledImage = pieceIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+				ImageIcon resizedIcon = new ImageIcon(scaledImage);
+				button[j].setIcon(resizedIcon);
+			}else{
+				button[j].setIcon(null);
 			}
+			button[j].removeActionListener(buttonListener);
+			System.out.println(Arrays.toString(button[j].cor) +  " ACTION LISTENER remvoed at resetEveryButton");
 		}
 	}
 
@@ -473,7 +466,11 @@ class board {
 		if(buttonPresses == 1 ){
 			resetEveryButton();
 			button[ind].removeActionListener(buttonListener);
-			from = cor;
+			if(!isSameColorButtonClicked || gameFirstmove){
+				gameFirstmove = false;
+				isSameColorButtonClicked = false;
+				from = cor;
+			}
 			System.out.println("button press is one");
 			setOneColorTOActive();
 			removeAllListeners();
@@ -490,10 +487,14 @@ class board {
 
 
 			if(getPiece(from).color.equals(getPiece(to).color)){
+
 				System.out.println("same color");
+				buttonPresses++;
 				resetEveryButton();
 				setOneColorTOActive();
-				setValidMovesActive(from, ind);
+				setValidMovesActive(cor, ind);
+				from = cor;
+				isSameColorButtonClicked = true;
 
 			}else {
 				System.out.println("diff color");
@@ -507,27 +508,6 @@ class board {
 				isCheck(playing.color);
 			}
 
-
-//			if(!capture(from,to)){
-//
-//				buttonPresses = 0;
-//				removeAllListeners();
-//				setOneColorTOActive();
-//				turnHandler();
-//				isCheck(playing.color);
-//
-//			}else {
-//
-//				buttonPresses = 0;
-//				print();
-//				printCor();
-//				switchTurns();
-//				resetEveryButton();
-//				setOneColorTOActive();
-//				turnHandler();
-//				isCheck(playing.color);
-//
-//			}
 
 		}
 
