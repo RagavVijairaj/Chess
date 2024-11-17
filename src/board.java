@@ -251,14 +251,12 @@ class board {
 			}
 		}
 
-
 		return false;
 	}
 
 
 	//working
 	boolean isGameover(String c){
-
 		return false;
 	}
 
