@@ -2,6 +2,7 @@ import java.awt.*;
 
 public class main {
 	public static void main(String[] args) {
+
 		board b = new board();
 
 		b.init();
@@ -11,8 +12,10 @@ public class main {
 		b.guiStart();
 
 
-		
-	
+
+
+
+
 
 	}
 

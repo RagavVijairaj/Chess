@@ -48,6 +48,7 @@ class board {
 	Boolean isSameColorButtonClicked = true;
 	Boolean gameFirstMove = true;
 	Boolean isPeiceLastCaptured = false;
+	boolean isGameover = false;
 
 
 	board() {
@@ -254,14 +255,38 @@ class board {
 		return false;
 	}
 
+	//changing this to use for both stale and checkmate by ediding the else to handle no moves left if not current check // in progrees
+	boolean isCheckMate(){
 
-	//working
-	boolean isGameover(String c){
+//		if(isCheck(playing.color)) {
+//
+//			ArrayList<Integer[]> peicesToCheck = new ArrayList<>();
+//
+//			for (int i = 0; i < 8; i++) {
+//				for (int j = 0; j < 8; j++) {
+//					boolean isPeiceOnGrid = playing.color.equals("w") ? grid[i][j].equals("B") || grid[i][j].equals("P") || grid[i][j].equals("R") || grid[i][j].equals("N") || grid[i][j].equals("Q") || grid[i][i].equals("K") : grid[i][j].equals("p") || grid[i][j].equals("r") || grid[i][j].equals("n") || grid[i][j].equals("b") || grid[i][j].equals("q") || grid[i][i].equals("k");
+//					if (isPeiceOnGrid) {
+//						peicesToCheck.add(new Integer[]{i, j});
+//
+//					}
+//				}
+//			}
+//
+//			for (Integer[] peices : peicesToCheck) {
+//				for (int i = 0; i < 8; i++) {
+//					for (int j = 0; j < 8; j++) {
+//
+//						if(getPiece(new int[] {peices[0],peices[1]}).isValidMove(grid, new int[] {peices[0],peices[1]}, new int[] {i,j},playing.color)|| checkIfMoveRemovesCheck(new int[] {peices[0],peices[1]}, new int[] {i,j})){
+//								return false;
+//						}
+//					}
+//				}
+//			}
+//
+//		}
+
 		return false;
 	}
-
-
-
 
 	boolean capture(int[] from, int[] to) {
 
@@ -289,6 +314,20 @@ class board {
 				grid[from[0]][from[1]] = " ";
 				grid[to[0]][to[1]] = fromPeiceType.not;
 				isPeiceLastCaptured = true;
+				switchTurns();
+				if(isCheckMate()){
+
+					System.out.println("checkMate");
+					if(button != null) {
+						isGameover = true;
+						resetEveryButton();
+						removeAllListeners();
+						switchTurns();
+						textArea.setText(playing.playerName + " WON!!!");
+					}
+				}else{
+					switchTurns();
+				}
 				return true;
 
 
@@ -450,18 +489,21 @@ class board {
 			resetEveryButton();
 			button[ind].removeActionListener(buttonListener);
 			if(!isSameColorButtonClicked || gameFirstMove || isPeiceLastCaptured){
-				isPeiceLastCaptured = !isPeiceLastCaptured;
-				gameFirstMove = false;
+				if(isPeiceLastCaptured) isPeiceLastCaptured =false;
 				isSameColorButtonClicked = false;
 				from = cor;
 			}
-			System.out.println("button press is one");
-			setOneColorTOActive();
-			removeAllListeners();
-			if(!setValidMovesActive(cor , ind)){
+
+
+				System.out.println("button press is one");
 				setOneColorTOActive();
-				buttonPresses =0;
-			}
+				removeAllListeners();
+				if (!setValidMovesActive(cor, ind)) {
+					setOneColorTOActive();
+					buttonPresses = 0;
+				}
+
+
 
 
 		}else if(buttonPresses == 2){
@@ -481,15 +523,21 @@ class board {
 				isSameColorButtonClicked = true;
 
 			}else {
+
 				System.out.println("diff color");
-				capture(from, to);
-				print();
-				printCor();
 				switchTurns();
-				resetEveryButton();
-				setOneColorTOActive();
-				turnHandler();
+				capture(from, to);
 				isCheck(playing.color);
+
+				if(!isGameover) {
+					print();
+					printCor();
+					resetEveryButton();
+					setOneColorTOActive();
+					turnHandler();
+
+				}
+
 			}
 
 
