@@ -8,6 +8,7 @@ public class main {
 		b.print();
 		b.printCor();
 		b.guiInit();
+		b.guiStart();
 
 
 		

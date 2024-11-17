@@ -1,11 +1,7 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
-import java.util.Timer;
 import javax.swing.*;
 
 class board {
@@ -30,12 +26,12 @@ class board {
 	player playing;
 
 	//gui
-	Color white = Color.decode("#f0d9b5");
-	Color pastel = Color.decode("#b48963");
-	Color bg = Color.decode("#181414");
+	private final Color white = Color.decode("#f0d9b5");
+	private final Color pastel = Color.decode("#b48963");
+	private final Color bg = Color.decode("#181414");
 
-	Font turnFont = new Font("IMPACT", Font.PLAIN, 35);
-	Font playerFont = new Font("IMPACT", Font.PLAIN, 18);
+	private final Font turnFont = new Font("IMPACT", Font.PLAIN, 35);
+	private final Font playerFont = new Font("IMPACT", Font.PLAIN, 18);
 
 	myButton[] button;
 
@@ -44,14 +40,14 @@ class board {
 	JTextArea playerBStats;
 
 
-	String[] initList = { "wR", "bR", "wN", "bN", "wB", "bB", "wQ", "bQ", "wK", "bK", "wP", "bP" };
+	private final String[] initList = { "wR", "bR", "wN", "bN", "wB", "bB", "wQ", "bQ", "wK", "bK", "wP", "bP" };
 	String[][] grid;
 	Map<String, piece> pieceMap;
 
 	//action listener stuff
 	int[] from;
 	int[] to;
-	int buttonPresses;
+	int buttonPresses = 0;
 
 	ActionListener textListener2;
 	ActionListener textListener1;
@@ -59,10 +55,7 @@ class board {
 
 	board() {
 
-		//gui
-		grid = new String[8][8];
-		button = new myButton[64];
-		//game
+
 		pieceMap = new HashMap<String, piece>();
 		bPlayer = new player("b");
 		wPlayer = new player("w");
@@ -80,6 +73,14 @@ class board {
 		bK = new king("b");
 		wQ = new queen("w");
 		bQ = new queen("b");
+
+
+
+
+	}
+
+
+	void guiInit(){
 
 		//action listener
 		buttonListener = new ActionListener() {
@@ -117,12 +118,16 @@ class board {
 			}
 		};
 
+		//gui
+
+		button = new myButton[64];
 
 	}
 
 	void init() {
 
 		//for searcing later
+		grid = new String[8][8];
 		pieceMap.put("wR", wR);
 		pieceMap.put("bR", bR);
 		pieceMap.put("wN", wN);
@@ -204,7 +209,7 @@ class board {
 
 
 
-	boolean isCheck(String[][] grid, String c){
+	boolean isCheck(String c){
 
 		ArrayList<Integer[]> peicesToCheck= new ArrayList<>();
 		int[] kingCor = new int[]{};
@@ -236,10 +241,15 @@ class board {
 
 			piece toCheck = getPiece(new int[] {isCheck[0], isCheck[1]});
 			if(toCheck.isValidMove(grid, new int[] {isCheck[0], isCheck[1]}, kingCor ,c)){
-				findButtonWihCor(kingCor).setBackground(Color.decode("#fa5050"));
+				if(button != null) {
+					System.out.println("red");
+					findButtonWihCor(kingCor).setBackground(Color.decode("#fa5050"));
+				}
 				return true;
 			}else{
-				findButtonWihCor(kingCor).setBackground(findButtonWihCor(kingCor).bg);
+				if(button != null) {
+					findButtonWihCor(kingCor).setBackground(findButtonWihCor(kingCor).bg);
+				}
 			}
 		}
 
@@ -256,24 +266,30 @@ class board {
 
 
 
-	boolean capture(int[] from, int to[]) {
 
-		if (grid[from[0]][from[1]].equals(" ") || getPiece(to).color.equals(getPiece(from).color)) {
+	boolean capture(int[] from, int[] to) {
+
+
+		if (grid[from[0]][from[1]].equals(" ") || getPiece(to).color.equals(getPiece(from).color) ) {
+			System.out.println("false");
 			return false;
-		} else {
-			piece fromPeiceType = getPiece(from);
 
-			boolean isToNotEmpty = !grid[to[0]][to[1]].equals(" ");
+		} else {
+
+			piece fromPeiceType = getPiece(from);
 
 			if (fromPeiceType.isValidMove(grid, from, to, fromPeiceType.color)) {
 
-				if(!grid[to[0]][to[1]].equals(" ")) {
+				if (!grid[to[0]][to[1]].equals(" ")) {
+
 					playing.capturePeice(getPiece(to));
 					playing.printCaptureMessage();
-					playerAStats.setText(wPlayer.stats);
-					playerBStats.setText(bPlayer.stats);
+					if (playerAStats != null) {
+						playerAStats.setText(wPlayer.stats);
+						playerBStats.setText(bPlayer.stats);
+					}
 				}
-
+				System.out.println("captured");
 				grid[from[0]][from[1]] = " ";
 				grid[to[0]][to[1]] = fromPeiceType.not;
 				return true;
@@ -286,6 +302,9 @@ class board {
 
 
 	}
+
+
+
 
 	void setBPlayerName(String wholeLine){
 		bPlayer.playerName = wholeLine.substring(wholeLine.indexOf(":") +2);
@@ -330,21 +349,30 @@ class board {
 				}else{
 					button[i].setIcon(null);
 				}
-				button[i].addActionListener(buttonListener);
+				button[i].removeActionListener(buttonListener);
+				System.out.println(Arrays.toString(button[i].cor) +  " ACTION LISTENER remvoed at resetEveryButton");
 				i++;
 			}
 		}
 	}
 
+	void removeAllListeners(){
+		for (int i = 0; i < 64; i++) {
+			button[i].removeActionListener(buttonListener);
+		}
+	}
+
 	void setOneColorTOActive(){
+		removeAllListeners();
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
-				if(!(getPiece(new int[]{i,j}).color.equals(playing.color))){
+				if((getPiece(new int[]{i,j}).color.equals(playing.color))){
 
 					for (int k = 0; k < 64; k++) {
 						if(Arrays.equals(button[k].cor, new int[]{i, j})){
-							button[k].removeActionListener(buttonListener);
-							System.out.println(i + " " + j );
+							button[k].addActionListener(buttonListener);
+							System.out.println(i + " " + j  + " ACTION LISTENER Added @ setonecolor Active 	");
+
 						}
 					}
 				}
@@ -365,18 +393,20 @@ class board {
 		return null;
 	}
 
-	void setValidMovesActive(int[] cor, int ind){
-
+	boolean setValidMovesActive(int[] cor, int ind){
+//		findButtonWihCor(cor).addActionListener(buttonListener);
+		boolean validMoves = false;
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
 
 
 
-				if(getPiece(cor).isValidMove(grid, cor, new int[]{i, j}, playing.color) && !getPiece(cor).color.equals(getPiece(new int[]{i, j}).color)) {
-
+				if(getPiece(cor).isValidMove(grid, cor, new int[]{i, j}, playing.color) && !getPiece(cor).color.equals(getPiece(new int[]{i, j}).color) && checkIfMoveRemovesCheck(cor, new int[]{i, j})) {
+						validMoves = true;
 						if(Arrays.equals(findButtonWihCor(new int[]{i, j}).cor, new int[]{i, j})){
 
 							findButtonWihCor(new int[]{i, j}).addActionListener(buttonListener);
+							System.out.println(i + " " + j  + " ACTION LISTENER ADDED at setValidMoves");
 							findButtonWihCor(new int[]{i, j}).setBackground(Color.decode("#cdd26a"));
 
 
@@ -386,12 +416,44 @@ class board {
 
 						}
 
+
+				}else if(getPiece(cor).color.equals(getPiece(new int[]{i, j}).color)){
+					findButtonWihCor(new int[] {i,j}).addActionListener(buttonListener);
 				}
 
 			}
 		}
+
+		return validMoves;
 	}
 
+
+	boolean checkIfMoveRemovesCheck(int[] from, int[] to){
+		board test = new board();
+		test.init();
+
+		test.grid = Arrays.copyOf(grid, grid.length);
+		for (int i = 0; i < grid.length; i++) {
+			test.grid[i] = Arrays.copyOf(grid[i], grid[1].length);
+		}
+
+		test.capture(from,to);
+		System.out.println("test");
+		return !test.isCheck(playing.color);
+	}
+
+	boolean handleChecks(String color){
+		if(isCheck(playing.color)){
+			if(checkIfMoveRemovesCheck(from, to)){
+				return true;
+			}else{
+				return false;
+			}
+		}
+
+
+		return true;
+	}
 	void switchTurns() {
 		if(playing == wPlayer) {
 			playing = bPlayer;
@@ -400,36 +462,77 @@ class board {
 		}
 	}
 
-	void buttonActionHandler(int[] cor, int ind){
-		buttonPresses++;
 
+	void buttonActionHandler(int[] cor, int ind){
+
+
+		buttonPresses++;
 		System.out.println("button press:"  + Arrays.toString(cor));
 
 
 		if(buttonPresses == 1 ){
+			button[ind].removeActionListener(buttonListener);
+			from = cor;
 			System.out.println("button press is one");
 			setOneColorTOActive();
-			setValidMovesActive(cor , ind);
-			from = cor;
+			removeAllListeners();
+			if(!setValidMovesActive(cor , ind)){
+				setOneColorTOActive();
+				buttonPresses =0;
+			}
+
+
 		}else if(buttonPresses == 2){
-			System.out.println("button press is two");
-			buttonPresses = 0;
 			to = cor;
-			capture(from,to);
-			print();
-			printCor();
-			switchTurns();
-			resetEveryButton();
-			setOneColorTOActive();
-			turnHandler();
-			isCheck(grid, playing.color);
+			buttonPresses = 0;
+			System.out.println("button press is two");
+
+
+			if(getPiece(from).color.equals(getPiece(to).color)){
+				resetEveryButton();
+				setOneColorTOActive();
+				setValidMovesActive(from, ind);
+
+			}else {
+				capture(from, to);
+				print();
+				printCor();
+				switchTurns();
+				resetEveryButton();
+				setOneColorTOActive();
+				turnHandler();
+				isCheck(playing.color);
+			}
+
+
+//			if(!capture(from,to)){
+//
+//				buttonPresses = 0;
+//				removeAllListeners();
+//				setOneColorTOActive();
+//				turnHandler();
+//				isCheck(playing.color);
+//
+//			}else {
+//
+//				buttonPresses = 0;
+//				print();
+//				printCor();
+//				switchTurns();
+//				resetEveryButton();
+//				setOneColorTOActive();
+//				turnHandler();
+//				isCheck(playing.color);
+//
+//			}
+
 		}
 
 
-		
+
 		}
 
-	void guiInit() {
+	void guiStart() {
 
 
 		 JFrame frame = new JFrame();  //the entire screen
@@ -438,7 +541,7 @@ class board {
 		 frame.setLayout(new BorderLayout(0, 0));
 		 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		 frame.setTitle("Duppi's Chess");
-		 frame.setIconImage(new ImageIcon(getClass().getResource("/kb.png")).getImage());
+		 frame.setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/kb.png"))).getImage());
 		 frame.setResizable(false);
 		 frame.setBackground(bg);
 
@@ -509,7 +612,14 @@ class board {
 				 button[i] = new myButton();
 				 button[i].cor = new int[]{j, k};
 				 button[i].ind = i;
-				 button[i].addActionListener(buttonListener);
+
+				 // only add white pieces to be active
+				 if(i > 47 && i < 64){
+					 button[i].addActionListener(buttonListener);
+					 System.out.println(Arrays.toString(button[i].cor) +  " ACTION LISTENER Added at Gui init " + i);
+				 }
+
+
 				 button[i].setBorder(null);
 				 button[i].setFocusPainted(false);
 				 piecePanel.add(button[i]);
