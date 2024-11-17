@@ -1,11 +1,18 @@
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
-import javax.swing.*;
 
 class board {
 
+	//gui
+	private final Color white = Color.decode("#f0d9b5");
+	private final Color pastel = Color.decode("#b48963");
+	private final Color bg = Color.decode("#181414");
+	private final Font turnFont = new Font("IMPACT", Font.PLAIN, 35);
+	private final Font playerFont = new Font("IMPACT", Font.PLAIN, 18);
+	private final String[] initList = { "wR", "bR", "wN", "bN", "wB", "bB", "wQ", "bQ", "wK", "bK", "wP", "bP" };
 	// pieces
 	rook wR;
 	rook bR;
@@ -19,28 +26,14 @@ class board {
 	king bK;
 	queen wQ;
 	queen bQ;
-
 	//players
 	player wPlayer;
 	player bPlayer;
 	player playing;
-
-	//gui
-	private final Color white = Color.decode("#f0d9b5");
-	private final Color pastel = Color.decode("#b48963");
-	private final Color bg = Color.decode("#181414");
-
-	private final Font turnFont = new Font("IMPACT", Font.PLAIN, 35);
-	private final Font playerFont = new Font("IMPACT", Font.PLAIN, 18);
-
 	myButton[] button;
-
 	JTextField textArea;
 	JTextArea playerAStats;
 	JTextArea playerBStats;
-
-
-	private final String[] initList = { "wR", "bR", "wN", "bN", "wB", "bB", "wQ", "bQ", "wK", "bK", "wP", "bP" };
 	String[][] grid;
 	Map<String, piece> pieceMap;
 
@@ -53,7 +46,9 @@ class board {
 	ActionListener textListener1;
 	ActionListener buttonListener;
 	Boolean isSameColorButtonClicked = true;
-	Boolean gameFirstmove = true;
+	Boolean gameFirstMove = true;
+	Boolean isPeiceLastCaptured = false;
+
 
 	board() {
 
@@ -184,7 +179,7 @@ class board {
 			System.out.print("|");
 
 			for (int i = 0; i < 8; i++) {
-				System.out.print(String.valueOf(j) + " " + String.valueOf(i) + "|");
+				System.out.print(j + " " + i + "|");
 
 			}
 			System.out.println();
@@ -295,6 +290,7 @@ class board {
 				System.out.println("captured");
 				grid[from[0]][from[1]] = " ";
 				grid[to[0]][to[1]] = fromPeiceType.not;
+				isPeiceLastCaptured = true;
 				return true;
 
 
@@ -435,18 +431,7 @@ class board {
 		return !test.isCheck(playing.color);
 	}
 
-	boolean handleChecks(String color){
-		if(isCheck(playing.color)){
-			if(checkIfMoveRemovesCheck(from, to)){
-				return true;
-			}else{
-				return false;
-			}
-		}
 
-
-		return true;
-	}
 	void switchTurns() {
 		if(playing == wPlayer) {
 			playing = bPlayer;
@@ -458,7 +443,7 @@ class board {
 
 	void buttonActionHandler(int[] cor, int ind){
 
-
+		System.out.println("curent state: " + isSameColorButtonClicked);
 		buttonPresses++;
 		System.out.println("button press:"  + Arrays.toString(cor));
 
@@ -466,8 +451,9 @@ class board {
 		if(buttonPresses == 1 ){
 			resetEveryButton();
 			button[ind].removeActionListener(buttonListener);
-			if(!isSameColorButtonClicked || gameFirstmove){
-				gameFirstmove = false;
+			if(!isSameColorButtonClicked || gameFirstMove || isPeiceLastCaptured){
+				isPeiceLastCaptured = !isPeiceLastCaptured;
+				gameFirstMove = false;
 				isSameColorButtonClicked = false;
 				from = cor;
 			}
@@ -514,6 +500,9 @@ class board {
 
 
 		}
+
+
+
 
 	void guiStart() {
 

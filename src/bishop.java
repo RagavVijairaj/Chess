@@ -72,7 +72,6 @@ class bishop extends piece {
 
 
 		boolean isDiagonal = Math.abs(from[0] - to[0]) == Math.abs(from[1] - to[1]);
-		if(isDiagonal && isAllBoxesInFrontClear(grid, from, to)) return true;
-		return false;
-	}
+        return isDiagonal && isAllBoxesInFrontClear(grid, from, to);
+    }
 }

@@ -19,7 +19,6 @@ class knight extends piece{
 
     @Override 
     boolean isValidMove (String[][] grid, int[] from, int[] to, String color){
-       if ((Math.abs(from[0] - to[0]) == 2 && Math.abs(from[1] - to[1]) == 1)  ||  (Math.abs(from[0] - to[0]) == 1 && Math.abs(from[1] - to[1]) == 2)) return true;
-        return false;
+        return (Math.abs(from[0] - to[0]) == 2 && Math.abs(from[1] - to[1]) == 1) || (Math.abs(from[0] - to[0]) == 1 && Math.abs(from[1] - to[1]) == 2);
     }
 }

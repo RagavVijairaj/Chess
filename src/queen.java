@@ -69,11 +69,11 @@ class queen extends piece {
 	}
 
     boolean isAllBoxesInFrontClear (String[][] grid, int[] from, int[] to) {
-        boolean isHorizontal = from[0] == to[0] ? true : false;
+        boolean isHorizontal = from[0] == to[0];
 
         if(isHorizontal){
           
-            boolean isLeft = (to[1] < from[1]) ? true : false;
+            boolean isLeft = to[1] < from[1];
     
             if(isLeft){
                 
@@ -93,7 +93,7 @@ class queen extends piece {
 
         }else{
            
-            boolean isUp = from[0] > to[0] ? true : false;
+            boolean isUp = from[0] > to[0];
 
             if(isUp){
               
@@ -123,7 +123,6 @@ class queen extends piece {
 
         boolean isDiagonal =  Math.abs(from[0] - to[0]) == Math.abs(from[1] - to[1]);
         boolean isXY = from[1] == to[1] || from[0] == to[0];
-        if((isDiagonal && isAllBoxesInDiagonalClear(grid, from, to)) || isXY && isAllBoxesInFrontClear(grid, from, to)) return true;
-        return false;
+        return (isDiagonal && isAllBoxesInDiagonalClear(grid, from, to)) || isXY && isAllBoxesInFrontClear(grid, from, to);
     }
 }

@@ -54,13 +54,9 @@ class pawn extends piece {
 		
 		// if pawn wants to cut a piece in front left or right its valid
 		if (pieceColor.equals("w") && ((to[1] == from[1] + 1 && to[0] == from[0] - 1) || (to[1] == from[1] - 1 && to[0] == from[0] - 1))) {
-			if (!grid[to[0]][to[1]].equals(" ")) {
-				return true;
-			}
+            return !grid[to[0]][to[1]].equals(" ");
 		} else if (pieceColor.equals("b") && ((from[1] == to[1] - 1 && from[0] == to[0] - 1) || (from[1] == to[1] + 1 && from[0] == to[0] - 1))) {
-			if (!grid[to[0]][to[1]].equals(" ")) {
-				return true;
-			}
+            return !grid[to[0]][to[1]].equals(" ");
 		}
 
 		return false;
