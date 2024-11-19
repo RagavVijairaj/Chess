@@ -193,21 +193,37 @@ class board {
 
     }
 
-    void printCor() {
+
+	void printWhite() {
+
+
         for (int j = 0; j < 8; j++) {
             System.out.println();
             System.out.print("|");
 
             for (int i = 0; i < 8; i++) {
-                System.out.print(j + " " + i + "|");
+                System.out.print(grid[j][i] + "|");
 
             }
-            System.out.println();
 
+        }
+
+        System.out.println();
+
+    }
+    
+    void printBlack(){
+        for(int i = grid.length -1 ; i >= 0; i-- ){
+            
+            System.out.println();
+            System.out.print("|");
+            for(int j = grid[i].length -1 ; j >= 0; j-- ){
+                System.out.print(grid[i][j] + "|");
+                
+            }
         }
         System.out.println();
     }
-
     //uses the peice map to get the peice from its not
     piece getPiece(int[] cordinates) {
 
