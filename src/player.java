@@ -45,9 +45,9 @@ public class player {
     void printCaptureMessage(JTextArea statsArea){
 
         if(color.equals("w")){
-            stats = (playerName + "(" + color + ")" + "\n\n" + capturedPieces.get("p") + " Pawns\n" + capturedPieces.get("n")  + " Knights\n" +capturedPieces.get("b") + " Bishops\n"+ capturedPieces.get("q") + " Queen\n"+capturedPieces.get("r") + " Rooks");
+            stats = (playerName + "(" + color + ")" + "\n\n" + capturedPieces.get("p") + " Pawn(s)\n" + capturedPieces.get("n")  + " Knight(s)\n" +capturedPieces.get("b") + " Bishop(s)\n"+ capturedPieces.get("q") + " Queen\n"+capturedPieces.get("r") + " Rook(s)");
         }else{
-            stats = (playerName + "(" + color + ")" + "\n\n" +capturedPieces.get("P") + " Pawns\n" + capturedPieces.get("N") + " Knights\n" +capturedPieces.get("B") + " Bishops\n"+ capturedPieces.get("Q") + " Queen\n"+capturedPieces.get("R") + " Rooks");
+            stats = (playerName + "(" + color + ")" + "\n\n" +capturedPieces.get("P") + " Pawn(s)\n" + capturedPieces.get("N") + " Knight(s)\n" +capturedPieces.get("B") + " Bishop(s)\n"+ capturedPieces.get("Q") + " Queen\n"+capturedPieces.get("R") + " Rook(s)");
         }
 
 

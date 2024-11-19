@@ -273,16 +273,16 @@ class board {
         return false;
     }
 
-    //changing this to use for both stale and checkmate by ediding the else to handle no moves left if not current check // in progrees
-    boolean isGameover() {
 
-//		if(isCheck(playing.color)) {
-//
+    boolean isGameNotOver() {
+
+//		if(isCheck(playing.color)){    //checkmate
+//			//getAllpeicesFromeThePlayingColor
 //			ArrayList<Integer[]> peicesToCheck = new ArrayList<>();
 //
 //			for (int i = 0; i < 8; i++) {
 //				for (int j = 0; j < 8; j++) {
-//					boolean isPeiceOnGrid = playing.color.equals("w") ? grid[i][j].equals("B") || grid[i][j].equals("P") || grid[i][j].equals("R") || grid[i][j].equals("N") || grid[i][j].equals("Q") || grid[i][i].equals("K") : grid[i][j].equals("p") || grid[i][j].equals("r") || grid[i][j].equals("n") || grid[i][j].equals("b") || grid[i][j].equals("q") || grid[i][i].equals("k");
+//					boolean isPeiceOnGrid = playing.color.equals("W") ? grid[i][j].equals("B") || grid[i][j].equals("P") || grid[i][j].equals("R") || grid[i][j].equals("N") || grid[i][j].equals("Q") : grid[i][j].equals("p") || grid[i][j].equals("r") || grid[i][j].equals("n") || grid[i][j].equals("b") || grid[i][j].equals("q");
 //					if (isPeiceOnGrid) {
 //						peicesToCheck.add(new Integer[]{i, j});
 //
@@ -290,19 +290,33 @@ class board {
 //				}
 //			}
 //
-//			for (Integer[] peices : peicesToCheck) {
+//
+//			//Check If any moves can removeCheck
+//
+//			for (Integer[] isCheck : peicesToCheck) {
+//				piece toCheck = getPiece(new int[]{isCheck[0], isCheck[1]});
 //				for (int i = 0; i < 8; i++) {
 //					for (int j = 0; j < 8; j++) {
-//
-//						if(getPiece(new int[] {peices[0],peices[1]}).isValidMove(grid, new int[] {peices[0],peices[1]}, new int[] {i,j},playing.color)|| checkIfMoveRemovesCheck(new int[] {peices[0],peices[1]}, new int[] {i,j})){
-//								return false;
+//						if(checkIfMoveRemovesCheck(new int[]{isCheck[0], isCheck[1]}, new int[] {i,j})){
+//							isCheckMate = true;
+//							return false;
 //						}
 //					}
 //				}
+//
+//
 //			}
+//
+//
+//
+//		}else{                          //stale mate
+//
+//
 //
 //		}
 
+
+//        return true;
         return false;
     }
 
@@ -341,7 +355,7 @@ class board {
 
                 // Handle game state
                 switchTurns();
-                if (isGameover()) {
+                if (isGameNotOver()) {
 
 
                     if (button != null) {
@@ -368,6 +382,45 @@ class board {
             }
         }
     }
+
+	boolean safeCapture(int[] from, int[] to) {
+		if (grid[from[0]][from[1]].equals(" ") || getPiece(to).color.equals(getPiece(from).color)) {
+
+			return false;
+		} else {
+			piece fromPieceType = getPiece(from);
+
+			if (fromPieceType.isValidMove(grid, from, to, fromPieceType.color)) {
+				// Handle capture
+				if (!grid[to[0]][to[1]].equals(" ")) {
+
+
+					piece capturedPiece = getPiece(to);
+					playing.capturePiece(capturedPiece);
+
+					// Update the stats display
+					if (playing.color.equals("w")) {
+
+						playing.printCaptureMessage(playerAStats);
+
+					} else if (playing.color.equals("b")) {
+
+						playing.printCaptureMessage(playerBStats);
+
+					}
+				}
+
+				// Update the board
+				grid[to[0]][to[1]] = fromPieceType.not;
+				grid[from[0]][from[1]] = " ";
+				isPeiceLastCaptured = true;
+
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
 
 
     void setBPlayerName(String wholeLine) {
@@ -492,7 +545,7 @@ class board {
             test.grid[i] = Arrays.copyOf(grid[i], grid[1].length);
         }
 
-        test.capture(from, to);
+        test.safeCapture(from, to);
 
         return !test.isCheck(playing.color);
     }
