@@ -16,4 +16,6 @@ public class piece {
     boolean isValidMove(String[][] grid, int[] from, int[] to, String color){
         return false;
     }
+
+
 }

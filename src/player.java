@@ -1,6 +1,8 @@
+import javax.swing.*;
+import java.awt.*;
 import java.util.HashMap;
 public class player {
-    int TotalPoints; 
+    int TotalPoints;
     String color;
     String playerName = "----";
     String stats;
@@ -9,8 +11,8 @@ public class player {
 
     player(String c){
         color = c;
-        TotalPoints = 0; 
-        
+        TotalPoints = 0;
+
         if(c.equals("b")){
             capturedPieces.put("P", 0);
             capturedPieces.put("B", 0);
@@ -25,12 +27,14 @@ public class player {
             capturedPieces.put("n", 0);
         }
     }
-    
-    void capturePeice (piece p){
-        
+
+    void capturePiece (piece p){
+
+
+
+
         TotalPoints += p.points;
 
-        
 
         if(capturedPieces.containsKey(p.not)){
             int currentVal = capturedPieces.get(p.not);
@@ -38,13 +42,19 @@ public class player {
         }
     }
 
-    void printCaptureMessage(){
-        System.out.println(playerName + " has " + TotalPoints + " point(s)." );
+    void printCaptureMessage(JTextArea statsArea){
 
         if(color.equals("w")){
             stats = (playerName + "(" + color + ")" + "\n\n" + capturedPieces.get("p") + " Pawns\n" + capturedPieces.get("n")  + " Knights\n" +capturedPieces.get("b") + " Bishops\n"+ capturedPieces.get("q") + " Queen\n"+capturedPieces.get("r") + " Rooks");
         }else{
             stats = (playerName + "(" + color + ")" + "\n\n" +capturedPieces.get("P") + " Pawns\n" + capturedPieces.get("N") + " Knights\n" +capturedPieces.get("B") + " Bishops\n"+ capturedPieces.get("Q") + " Queen\n"+capturedPieces.get("R") + " Rooks");
+        }
+
+
+        if(statsArea != null){
+
+            statsArea.setText(stats);
+
         }
     }
 }

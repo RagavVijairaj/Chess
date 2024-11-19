@@ -61,4 +61,5 @@ class pawn extends piece {
 
 		return false;
 	}
+
 }

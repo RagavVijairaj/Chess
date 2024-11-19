@@ -6,16 +6,8 @@ public class main {
 		board b = new board();
 
 		b.init();
-		b.print();
-		b.printCor();
 		b.guiInit();
 		b.guiStart();
-
-
-
-
-
-
 
 	}
 
