@@ -242,6 +242,7 @@ class board {
     }
 
 
+
     boolean isCheck(String c) {
 
         ArrayList<Integer[]> peicesToCheck = new ArrayList<>();
@@ -272,6 +273,10 @@ class board {
 
             piece toCheck = getPiece(new int[]{isCheck[0], isCheck[1]});
 
+            if (isCheck[0] < 0 || isCheck[1] >= 8 || isCheck[0] < 0 || isCheck[1] >= 8) {
+                System.err.println("invalid cor");
+            }
+
 
             if (toCheck.isValidMove(grid, new int[]{isCheck[0], isCheck[1]}, kingCor, toCheck.color)) {
                 if (button != null) {
@@ -290,49 +295,48 @@ class board {
     }
 
 
-    boolean isGameNotOver() {
-
-//		if(isCheck(playing.color)){    //checkmate
-//			//getAllpeicesFromeThePlayingColor
-//			ArrayList<Integer[]> peicesToCheck = new ArrayList<>();
-//
-//			for (int i = 0; i < 8; i++) {
-//				for (int j = 0; j < 8; j++) {
-//					boolean isPeiceOnGrid = playing.color.equals("W") ? grid[i][j].equals("B") || grid[i][j].equals("P") || grid[i][j].equals("R") || grid[i][j].equals("N") || grid[i][j].equals("Q") : grid[i][j].equals("p") || grid[i][j].equals("r") || grid[i][j].equals("n") || grid[i][j].equals("b") || grid[i][j].equals("q");
-//					if (isPeiceOnGrid) {
-//						peicesToCheck.add(new Integer[]{i, j});
-//
-//					}
-//				}
-//			}
-//
-//
-//			//Check If any moves can removeCheck
-//
-//			for (Integer[] isCheck : peicesToCheck) {
-//				piece toCheck = getPiece(new int[]{isCheck[0], isCheck[1]});
-//				for (int i = 0; i < 8; i++) {
-//					for (int j = 0; j < 8; j++) {
-//						if(checkIfMoveRemovesCheck(new int[]{isCheck[0], isCheck[1]}, new int[] {i,j})){
-//							isCheckMate = true;
-//							return false;
-//						}
-//					}
-//				}
-//
-//
-//			}
-//
-//
-//
-//		}else{                          //stale mate
-//
-//
-//
-//		}
+    boolean isGameOver() {
 
 
-//        return true;
+        ArrayList<Integer[]> peicesToCheck = new ArrayList<>();
+        int validmoveCount = 0;
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                boolean isPeiceOnGrid = playing.color.equals("w") ? grid[i][j].equals("B") || grid[i][j].equals("P") || grid[i][j].equals("R") || grid[i][j].equals("N") || grid[i][j].equals("Q") || grid[i][j].equals("K"): grid[i][j].equals("p") || grid[i][j].equals("r") || grid[i][j].equals("n") || grid[i][j].equals("b") || grid[i][j].equals("q") || grid[i][j].equals("k") ;
+                if (isPeiceOnGrid) {
+                    peicesToCheck.add(new Integer[]{i, j});
+
+                }
+            }
+        }
+
+        for(Integer[] isCheck : peicesToCheck) {
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+
+                    if(checkIfMoveRemovesCheck(new int[] {isCheck[0], isCheck[1]}, new int[] {i,j})){
+                        validmoveCount++;
+                    }
+
+
+
+                }
+            }
+
+        }
+
+        if(isCheck(playing.color) && validmoveCount == 0){
+            isCheckMate = true;
+            return true;
+        }else if(!isCheck(playing.color) && validmoveCount == 0){
+            isStalemate = true;
+            return true;
+        }
+
+
+
+
         return false;
     }
 
@@ -369,16 +373,19 @@ class board {
                 grid[from[0]][from[1]] = " ";
                 isPeiceLastCaptured = true;
 
+
+
+
                 // Handle game state
                 switchTurns();
-                if (isGameNotOver()) {
+                if (isGameOver()) {
 
 
                     if (button != null) {
                         if (isCheckMate) {
                             resetEveryButton();
                             removeAllListeners();
-
+                            switchTurns();
                             textArea.setText(playing.playerName + " WON!" + " Press Enter To Restart");
                             textArea.addActionListener(restartGame);
                         } else if (isStalemate) {

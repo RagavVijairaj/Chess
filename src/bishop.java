@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.util.Arrays;
 
 class bishop extends piece {
 
@@ -70,7 +71,7 @@ class bishop extends piece {
 	@Override
 	boolean isValidMove(String[][] grid, int[] from, int[] to, String color) {
 
-
+		System.out.println("cor from" + Arrays.toString(from) +" cor to " + Arrays.toString(to));
 		boolean isDiagonal = Math.abs(from[0] - to[0]) == Math.abs(from[1] - to[1]);
         return isDiagonal && isAllBoxesInFrontClear(grid, from, to);
     }
