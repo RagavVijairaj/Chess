@@ -4,7 +4,7 @@
 
 
 to do : 
-1. fix endgame - checkmate and stalemate
+1. fix endgame - checkmate and stalemate(done)
 2. add timer
 3. add resest
 4. add board turn
