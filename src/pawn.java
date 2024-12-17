@@ -22,6 +22,8 @@ class pawn extends piece {
 		// if pawn in starting position and is one or two move away and nothing is in
 		// front of it, it's valid
 
+
+
 		if ((pieceColor.equals("w") && from[0] == 6) || (pieceColor.equals("b") && from[0] == 1)) {
 
 			if (pieceColor.equals("w") && to[1] == from[1]) {
@@ -58,6 +60,8 @@ class pawn extends piece {
 		} else if (pieceColor.equals("b") && ((from[1] == to[1] - 1 && from[0] == to[0] - 1) || (from[1] == to[1] + 1 && from[0] == to[0] - 1))) {
             return !grid[to[0]][to[1]].equals(" ");
 		}
+
+
 
 		return false;
 	}

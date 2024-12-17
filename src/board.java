@@ -315,8 +315,11 @@ class board {
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
 
-                    if(checkIfMoveRemovesCheck(new int[] {isCheck[0], isCheck[1]}, new int[] {i,j})){
-                        validmoveCount++;
+                    if(getPiece(new int[] {isCheck[0], isCheck[1]}).isValidMove(grid,new int[] {isCheck[0], isCheck[1]},new int[] {i,j},playing.color) && checkIfMoveRemovesCheck(new int[] {isCheck[0], isCheck[1]}, new int[] {i,j}) ){
+//                        validmoveCount++;
+//                        System.out.println(checkIfMoveRemovesCheck(new int[] {isCheck[0], isCheck[1]}, new int[] {i,j}));
+//                        System.out.printf("from%d, %d to%d, %d",isCheck[0], isCheck[1],i,j);
+                        return false;
                     }
 
 
@@ -326,17 +329,18 @@ class board {
 
         }
 
+
         if(isCheck(playing.color) && validmoveCount == 0){
             isCheckMate = true;
             return true;
         }else if(!isCheck(playing.color) && validmoveCount == 0){
+
             isStalemate = true;
             return true;
         }
 
 
-
-
+        System.out.printf("validmove count%d",validmoveCount);
         return false;
     }
 
@@ -355,26 +359,35 @@ class board {
 
                     piece capturedPiece = getPiece(to);
                     playing.capturePiece(capturedPiece);
-
-                    // Update the stats display
-                    if (playing.color.equals("w")) {
-
-                        playing.printCaptureMessage(playerAStats);
-
-                    } else if (playing.color.equals("b")) {
-
-                        playing.printCaptureMessage(playerBStats);
-
-                    }
                 }
 
                 // Update the board
-                grid[to[0]][to[1]] = fromPieceType.not;
+                    //promotion logic
+                if (fromPieceType == wP && to[0] == 0){
+                    grid[to[0]][to[1]] = wQ.not;
+                    int currentVal = wPlayer.capturedPieces.get("q");
+                    wPlayer.capturedPieces.replace("q", currentVal, currentVal + 1);
+                }else if(fromPieceType == bP && to[0] == 7){
+                    grid[to[0]][to[1]] = bQ.not;
+                    int currentVal = bPlayer.capturedPieces.get("Q");
+                    bPlayer.capturedPieces.replace("Q", currentVal, currentVal + 1);
+                }else{
+                    grid[to[0]][to[1]] = fromPieceType.not;
+                }
+
                 grid[from[0]][from[1]] = " ";
                 isPeiceLastCaptured = true;
 
+                //update stats
+                if (playing.color.equals("w")) {
 
+                    playing.printCaptureMessage(playerAStats);
 
+                } else if (playing.color.equals("b")) {
+
+                    playing.printCaptureMessage(playerBStats);
+
+                }
 
                 // Handle game state
                 switchTurns();
