@@ -1,9 +1,7 @@
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.TextListener;
 import java.util.*;
 
 class board {
@@ -274,7 +272,7 @@ class board {
 
             piece toCheck = getPiece(new int[]{isCheck[0], isCheck[1]});
 
-            if (isCheck[0] < 0 || isCheck[1] >= 8 || isCheck[0] < 0 || isCheck[1] >= 8) {
+            if (isCheck[0] < 0 || isCheck[1] >= 8) {
                 System.err.println("invalid cor");
             }
 
@@ -300,7 +298,7 @@ class board {
 
 
         ArrayList<Integer[]> peicesToCheck = new ArrayList<>();
-        int validmoveCount = 0;
+
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -329,10 +327,10 @@ class board {
         }
 
 
-        if(isCheck(playing.color) && validmoveCount == 0){
+        if(isCheck(playing.color)){
             isCheckMate = true;
             return true;
-        }else if(!isCheck(playing.color) && validmoveCount == 0){
+        }else if(!isCheck(playing.color)){
 
             isStalemate = true;
             return true;
@@ -342,10 +340,9 @@ class board {
     }
 
 
-    boolean capture(int[] from, int[] to) {
+    void capture(int[] from, int[] to) {
         if (grid[from[0]][from[1]].equals(" ") || getPiece(to).color.equals(getPiece(from).color)) {
-
-            return false;
+            return;
         } else {
             piece fromPieceType = getPiece(from);
 
@@ -410,18 +407,15 @@ class board {
                 } else {
                     switchTurns();
                 }
-                return true;
-            } else {
-                return false;
+
             }
         }
     }
 
-	boolean safeCapture(int[] from, int[] to) {
+	void safeCapture(int[] from, int[] to) {
 		if (grid[from[0]][from[1]].equals(" ") || getPiece(to).color.equals(getPiece(from).color)) {
-
-			return false;
-		} else {
+            return;
+        } else {
 			piece fromPieceType = getPiece(from);
 
 			if (fromPieceType.isValidMove(grid, from, to, fromPieceType.color)) {
@@ -449,10 +443,7 @@ class board {
 				grid[from[0]][from[1]] = " ";
 				isPeiceLastCaptured = true;
 
-				return true;
-			} else {
-				return false;
-			}
+            }
 		}
 	}
 
@@ -683,8 +674,8 @@ class board {
     void turnBoard(){
         if(playing.color.equals("w")){
             piecePanel.removeAll();
-            for (int i = 0; i < button.length; i++) {
-                piecePanel.add(button[i]);
+            for (myButton myButton : button) {
+                piecePanel.add(myButton);
             }
         }else if(playing.color.equals("b")){
             piecePanel.removeAll();
@@ -720,7 +711,7 @@ class board {
         textArea.addActionListener(textListener1);
 
 
-        piecePanel = new JPanel();//holds all the peices
+        piecePanel = new JPanel();//holds all the pieces
         piecePanel.setLayout(new GridLayout(8, 8, 0, 0));
         piecePanel.setPreferredSize(new Dimension(500, 500));
         piecePanel.setBorder(BorderFactory.createEmptyBorder(9, 9, 9, 16));
@@ -764,6 +755,7 @@ class board {
                 isTurnBoard = false;
             }else if(turnBoard.getText().equals("TURN OFF")){
                 turnBoard.setText("TURN ON");
+                turnBoard();
                 turnBoard.setForeground(new Color(237, 222, 121));
                 isTurnBoard = true;
             }
