@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,6 +36,7 @@ class board {
     JTextField textArea;
     JTextArea playerAStats;
     JTextArea playerBStats;
+    JPanel piecePanel;
     String[][] grid;
     Map<String, piece> pieceMap;
 
@@ -119,6 +121,7 @@ class board {
                 textOut.setText("Game Started");
                 textOut.removeActionListener(textListener2);
                 textOut.setEditable(false);
+                setWhitePeicesActiveAtStart();
 
 
             }
@@ -316,9 +319,7 @@ class board {
                 for (int j = 0; j < 8; j++) {
 
                     if(getPiece(new int[] {isCheck[0], isCheck[1]}).isValidMove(grid,new int[] {isCheck[0], isCheck[1]},new int[] {i,j},playing.color) && checkIfMoveRemovesCheck(new int[] {isCheck[0], isCheck[1]}, new int[] {i,j}) ){
-//                        validmoveCount++;
-//                        System.out.println(checkIfMoveRemovesCheck(new int[] {isCheck[0], isCheck[1]}, new int[] {i,j}));
-//                        System.out.printf("from%d, %d to%d, %d",isCheck[0], isCheck[1],i,j);
+
                         return false;
                     }
 
@@ -339,8 +340,6 @@ class board {
             return true;
         }
 
-
-        System.out.printf("validmove count%d",validmoveCount);
         return false;
     }
 
@@ -596,7 +595,16 @@ class board {
         }
     }
 
+    void setWhitePeicesActiveAtStart(){
+        for (int i = 0; i < button.length; i++) {
 
+            if (i > 47 && i < 64) {
+                button[i].addActionListener(buttonListener);
+
+            }
+        }
+
+    }
     void buttonActionHandler(int[] cor, int ind) {
 
         buttonPresses++;
@@ -639,6 +647,9 @@ class board {
 				capture(from, to);
                 switchTurns();
 
+                turnBoard();
+
+
 
                 if (!isCheckMate && !isStalemate) {
 
@@ -658,13 +669,28 @@ class board {
     }
 
 
+    void turnBoard(){
+        if(playing.color.equals("w")){
+            piecePanel.removeAll();
+            for (int i = 0; i < button.length; i++) {
+                piecePanel.add(button[i]);
+            }
+        }else if(playing.color.equals("b")){
+            piecePanel.removeAll();
+            for (int i = button.length -1 ; i >= 0 ; i--) {
+                piecePanel.add(button[i]);
+            }
+        }
+
+    }
+
     void guiStart() {
 
 
         frame = new JFrame();  //the entire screen
 
         frame.setSize(600, 620);
-        frame.setLayout(new BorderLayout(0, 0));
+        frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTitle("Duppi's Chess");
         frame.setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/kb.png"))).getImage());
@@ -683,12 +709,12 @@ class board {
         textArea.addActionListener(textListener1);
 
 
-        JPanel piecePanel = new JPanel();//holds all the peices
-
+        piecePanel = new JPanel();//holds all the peices
         piecePanel.setLayout(new GridLayout(8, 8, 0, 0));
         piecePanel.setPreferredSize(new Dimension(500, 500));
         piecePanel.setBorder(BorderFactory.createEmptyBorder(9, 9, 9, 16));
         piecePanel.setBackground(bg);
+
 
         JPanel playerPanel = new JPanel(new GridLayout(2, 1, 20, 0)); // holds all the stats
 
@@ -726,12 +752,13 @@ class board {
         playerPanel.add(playerAStats, BorderLayout.NORTH);
         playerPanel.add(playerBStats, BorderLayout.SOUTH);
 
-
+        frame.add(piecePanel, BorderLayout.WEST);
         frame.add(playerPanel, BorderLayout.EAST);
         frame.add(textArea, BorderLayout.NORTH);
-        frame.add(piecePanel, BorderLayout.WEST);
 
-        // inits the button's color and icon for the start of the game
+
+
+        // inits the button's color and icon for the start of the game for white
         int i = 0;
         for (int j = 0; j < 8; j++) {
             for (int k = 0; k < 8; k++) {
@@ -739,11 +766,6 @@ class board {
                 button[i].cor = new int[]{j, k};
                 button[i].ind = i;
 
-                // only add white pieces to be active
-                if (i > 47 && i < 64) {
-                    button[i].addActionListener(buttonListener);
-
-                }
 
 
                 button[i].setBorder(null);
@@ -771,6 +793,12 @@ class board {
                 i++;
             }
         }
+
+
+
+
+
+
 
 
         //inits player's stats
