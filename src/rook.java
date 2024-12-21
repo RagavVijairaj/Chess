@@ -53,8 +53,6 @@ class rook extends piece{
                     if(!grid[i][from[1]].equals(" ")){
 
                         return false;
-                    } else{
-                      
                     }
                 }
 
