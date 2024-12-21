@@ -15,6 +15,7 @@ class board {
     private final Font turnFont = new Font("IMPACT", Font.PLAIN, 35);
     private final Font playerFont = new Font("IMPACT", Font.PLAIN, 18);
     private final String[] initList = {"wR", "bR", "wN", "bN", "wB", "bB", "wQ", "bQ", "wK", "bK", "wP", "bP"};
+    boolean isTurnBoard;
     // pieces
     rook wR;
     rook bR;
@@ -106,7 +107,7 @@ class board {
             public void actionPerformed(ActionEvent e) {
                 JTextField textOut = (JTextField) e.getSource();
                 setWPlayerName(textOut.getText());
-                textOut.setText("Enter Black Player's Name: ");
+                textOut.setText("Black's Name: ");
                 textOut.removeActionListener(textListener1);
                 textOut.addActionListener(textListener2);
 
@@ -131,17 +132,14 @@ class board {
         restartGame = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
-                board b = new board();
-                b.init();
-                b.guiInit();
-                b.guiStart();
+               restartGame();
             }
         };
 
         //gui
 
         button = new myButton[64];
+        isTurnBoard = true;
 
     }
 
@@ -398,12 +396,13 @@ class board {
                             resetEveryButton();
                             removeAllListeners();
                             switchTurns();
+                            textArea.setFont(new Font("IMPACT", Font.PLAIN, 30));
                             textArea.setText(playing.playerName + " WON!" + " Press Enter To Restart");
                             textArea.addActionListener(restartGame);
                         } else if (isStalemate) {
                             resetEveryButton();
                             removeAllListeners();
-
+                            textArea.setFont(new Font("IMPACT", Font.PLAIN, 30));
                             textArea.setText("DRAW! Press Enter to Restart");
                             textArea.addActionListener(restartGame);
                         }
@@ -459,14 +458,24 @@ class board {
 
 
     void setBPlayerName(String wholeLine) {
-        bPlayer.playerName = wholeLine.substring(wholeLine.indexOf(":") + 2);
+        String name = wholeLine.substring(wholeLine.indexOf(":") + 2);
+        if (name.length() > 7){
+            bPlayer.playerName = name.substring(0,8);
+        }else{
+            bPlayer.playerName = name;
+        }
         bPlayer.printCaptureMessage(playerBStats);
 
     }
 
     void setWPlayerName(String wholeLine) {
 
-        wPlayer.playerName = wholeLine.substring(wholeLine.indexOf(":") + 2);
+        String name = wholeLine.substring(wholeLine.indexOf(":") + 2);
+        if (name.length() > 7){
+            wPlayer.playerName = name.substring(0,8);
+        }else{
+            wPlayer.playerName = name;
+        }
         wPlayer.printCaptureMessage(playerAStats);
 
     }
@@ -646,8 +655,10 @@ class board {
 
 				capture(from, to);
                 switchTurns();
+                if(isTurnBoard){
+                    turnBoard();
+                }
 
-                turnBoard();
 
 
 
@@ -699,13 +710,13 @@ class board {
 
         textArea = new JTextField(); // shows player turn
 
-        textArea.setPreferredSize(new Dimension(600, 90));
+        textArea.setPreferredSize(new Dimension(470, 90));
         textArea.setFont(turnFont);
         textArea.setBorder(BorderFactory.createEmptyBorder(10, 15, 1, 5));
         textArea.setForeground(white);
         textArea.setBackground(bg);
         textArea.setEditable(true);
-        textArea.setText("Enter White Player's Name: ");
+        textArea.setText("White's Name: ");
         textArea.addActionListener(textListener1);
 
 
@@ -717,10 +728,49 @@ class board {
 
 
         JPanel playerPanel = new JPanel(new GridLayout(2, 1, 20, 0)); // holds all the stats
-
         playerPanel.setBackground(bg);
         playerPanel.setPreferredSize(new Dimension(100, 600));
-        playerPanel.setBackground(bg);
+
+        JPanel controls = new JPanel(new GridLayout(2, 1, 0, 0));
+        controls.setBackground(bg);
+        controls.setBorder(BorderFactory.createEmptyBorder(6, 0, 0, 5));
+        controls.setPreferredSize(new Dimension(110, 100));
+
+        JPanel textAndTurnPanel = new JPanel(new BorderLayout());
+        textAndTurnPanel.setBackground(bg);
+        textAndTurnPanel.add(controls, BorderLayout.EAST);
+        textAndTurnPanel.add(textArea, BorderLayout.CENTER);
+
+        JButton reset = new JButton("RESTART");
+        reset.setBorder(null);
+        reset.setFocusPainted(false);
+        reset.setFont(playerFont);
+        reset.setForeground(new Color(237, 138, 121));
+        reset.setBackground(bg);
+        reset.addActionListener(e -> {
+            restartGame();
+        });
+
+        JButton turnBoard = new JButton("TURN ON");
+        turnBoard.setBorder(null);
+        turnBoard.setFocusPainted(false);
+        turnBoard.setForeground(new Color(237, 222, 121));
+        turnBoard.setBackground(bg);
+        turnBoard.setFont(playerFont);
+        turnBoard.addActionListener(e-> {
+            if(turnBoard.getText().equals("TURN ON")){
+                turnBoard.setText("TURN OFF");
+                turnBoard.setForeground(new Color(237, 138, 121));
+                isTurnBoard = false;
+            }else if(turnBoard.getText().equals("TURN OFF")){
+                turnBoard.setText("TURN ON");
+                turnBoard.setForeground(new Color(237, 222, 121));
+                isTurnBoard = true;
+            }
+        });
+
+        controls.add(reset);
+        controls.add(turnBoard);
 
 
         playerAStats = new JTextArea();// player A stats
@@ -754,7 +804,7 @@ class board {
 
         frame.add(piecePanel, BorderLayout.WEST);
         frame.add(playerPanel, BorderLayout.EAST);
-        frame.add(textArea, BorderLayout.NORTH);
+        frame.add(textAndTurnPanel, BorderLayout.NORTH);
 
 
 
@@ -810,6 +860,14 @@ class board {
 
         frame.setVisible(true);
 
+    }
+
+     void restartGame() {
+         frame.setVisible(false);
+         board b = new board();
+         b.init();
+         b.guiInit();
+         b.guiStart();
     }
 
 }
