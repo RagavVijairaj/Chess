@@ -9,9 +9,9 @@ class bishop extends piece {
 			color = "w";
 			not = "B";
 			spwan = new int[][] { { 7, 2 }, { 7, 5 } };
-			icon = new ImageIcon(getClass().getResource("/bw.png"));
+			icon = new ImageIcon(getClass().getResource("/main/images/bw.png"));
 		} else if (c.equals("b")) {
-			icon = new ImageIcon(getClass().getResource("/bb.png"));
+			icon = new ImageIcon(getClass().getResource("/main/images/bb.png"));
 			color = "b";
 			not = "b";
 			spwan = new int[][] { { 0, 2 }, { 0, 5 } };

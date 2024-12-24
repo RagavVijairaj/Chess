@@ -8,12 +8,12 @@ class rook extends piece{
             color = "w";
             not = "R";
             spwan = new int[][] {{7,0}, {7,7}};
-            icon = new ImageIcon(getClass().getResource("/rw.png"));
+            icon = new ImageIcon(getClass().getResource("/main/images/rw.png"));
         }else if(c.equals("b")){
             color = "b";
             not = "r";
             spwan = new int[][] {{0,0}, {0,7}};
-            icon = new ImageIcon(getClass().getResource("/rb.png"));
+            icon = new ImageIcon(getClass().getResource("/main/images/rb.png"));
         }
     }
 

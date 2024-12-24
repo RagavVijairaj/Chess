@@ -9,12 +9,12 @@ class king extends piece {
             color = "w";
             not = "K";
             spwan = new int[][] {{7,4}};
-            icon = new ImageIcon(getClass().getResource("/kw.png"));
+            icon = new ImageIcon(getClass().getResource("/main/images/kw.png"));
         }else if(c.equals("b")){
             color = "b";
             not = "k";
             spwan = new int[][] {{0,4}};
-            icon = new ImageIcon(getClass().getResource("/kb.png"));
+            icon = new ImageIcon(getClass().getResource("/main/images/kb.png"));
         }
     }
     @Override

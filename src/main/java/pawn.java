@@ -8,12 +8,12 @@ class pawn extends piece {
 			color = "b";
 			not = "p";
 			spwan = new int[][] { { 1, 0 }, { 1, 1 }, { 1, 2 }, { 1, 3 }, { 1, 4 }, { 1, 5 }, { 1, 6 }, { 1, 7 } };
-			icon = new ImageIcon(getClass().getResource("/pb.png"));
+			icon = new ImageIcon(getClass().getResource("/main/images/pb.png"));
 		} else if (c.equals("w")) {
 			color = "w";
 			not = "P";
 			spwan = new int[][] { { 6, 0 }, { 6, 1 }, { 6, 2 }, { 6, 3 }, { 6, 4 }, { 6, 5 }, { 6, 6 }, { 6, 7 } };
-			icon = new ImageIcon(getClass().getResource("/pw.png"));
+			icon = new ImageIcon(getClass().getResource("/main/images/pw.png"));
 		}
 	}
 
