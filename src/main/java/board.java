@@ -7,12 +7,12 @@ import java.util.*;
 class board {
 
     //gui
-    private final Color white = Color.decode("#f0d9b5");
-    private final Color pastel = Color.decode("#b48963");
-    private final Color bg = Color.decode("#181414");
-    private final Font turnFont = new Font("IMPACT", Font.PLAIN, 35);
-    private final Font playerFont = new Font("IMPACT", Font.PLAIN, 18);
-    private final String[] initList = {"wR", "bR", "wN", "bN", "wB", "bB", "wQ", "bQ", "wK", "bK", "wP", "bP"};
+    static final Color white = Color.decode("#f0d9b5");
+    static final Color pastel = Color.decode("#b48963");
+    static final Color bg = Color.decode("#181414");
+    static final Font turnFont = new Font("IMPACT", Font.PLAIN, 35);
+    static final Font playerFont = new Font("IMPACT", Font.PLAIN, 18);
+    static final String[] initList = {"wR", "bR", "wN", "bN", "wB", "bB", "wQ", "bQ", "wK", "bK", "wP", "bP"};
     boolean isTurnBoard;
     // pieces
     rook wR;
@@ -37,7 +37,8 @@ class board {
     JTextArea playerBStats;
     JPanel piecePanel;
     String[][] grid;
-    Map<String, piece> pieceMap;
+    static Map<String, piece> pieceMap;
+
 
     //action listener stuff
     int[] from;
@@ -59,6 +60,10 @@ class board {
     //frame
     JFrame frame;
 
+    //spectating
+    Spectate spectator;
+    Stream streamer;
+    int gameId;
 
     board() {
 
@@ -383,6 +388,8 @@ class board {
 
                 }
 
+                streamer.updateGame(gameId,wPlayer.playerName,bPlayer.playerName,gridToString(),wPlayer.stats, bPlayer.stats);
+
                 // Handle game state
                 switchTurns();
                 if (isGameOver()) {
@@ -688,14 +695,16 @@ class board {
 
     void guiStart() {
 
+        spectator = new Spectate();
+        streamer = new Stream();
 
         frame = new JFrame();  //the entire screen
-
-        frame.setSize(600, 620);
-        frame.setLayout(new BorderLayout());
+        CardLayout cardLayout = new CardLayout();
+        frame.setSize(600, 615);
+        frame.setLayout(cardLayout);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTitle("Duppi's Chess");
-        frame.setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/kb.png"))).getImage());
+        frame.setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/main/images/kb.png"))).getImage());
         frame.setResizable(false);
         frame.setBackground(bg);
 
@@ -722,7 +731,7 @@ class board {
         playerPanel.setBackground(bg);
         playerPanel.setPreferredSize(new Dimension(100, 600));
 
-        JPanel controls = new JPanel(new GridLayout(2, 1, 0, 0));
+        JPanel controls = new JPanel(new GridLayout(4, 1, 0, 0));
         controls.setBackground(bg);
         controls.setBorder(BorderFactory.createEmptyBorder(6, 0, 0, 5));
         controls.setPreferredSize(new Dimension(110, 100));
@@ -761,8 +770,40 @@ class board {
             }
         });
 
+        JButton spectate = new JButton("SPECTATE");
+        spectate.setBorder(null);
+        spectate.setFocusPainted(false);
+        spectate.setForeground(new Color(237, 222, 121));
+        spectate.setBackground(bg);
+        spectate.setFont(playerFont);
+        spectate.addActionListener(e->{
+            cardLayout.show(frame.getContentPane(), "spectatePanel");
+        });
+
+        JButton spectateCode = new JButton("SHOW CODE");
+        ActionListener showCodeButton = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gameId = streamer.getNewPlayerCode();
+                spectateCode.setText(String.valueOf(gameId));
+                streamer.makeNewGame();
+                spectateCode.removeActionListener(this);
+            }
+        };
+
+        spectateCode.setBorder(null);
+        spectateCode.setFocusPainted(false);
+        spectateCode.setForeground(new Color(237, 222, 121));
+        spectateCode.setBackground(bg);
+        spectateCode.setFont(playerFont);
+        spectateCode.addActionListener(showCodeButton);
+
+
+
         controls.add(reset);
         controls.add(turnBoard);
+        controls.add(spectateCode);
+        controls.add(spectate);
 
 
         playerAStats = new JTextArea();// player A stats
@@ -793,10 +834,18 @@ class board {
 
         playerPanel.add(playerAStats, BorderLayout.NORTH);
         playerPanel.add(playerBStats, BorderLayout.SOUTH);
+        JPanel spectatePanel = spectator.panel;
+        spectator.goBack.addActionListener(e->{
+            cardLayout.show(frame.getContentPane(),"playingPanel");
+        });
 
-        frame.add(piecePanel, BorderLayout.WEST);
-        frame.add(playerPanel, BorderLayout.EAST);
-        frame.add(textAndTurnPanel, BorderLayout.NORTH);
+        JPanel playingPanel = new JPanel(new BorderLayout());
+        playingPanel.add(piecePanel, BorderLayout.WEST);
+        playingPanel.add(playerPanel, BorderLayout.EAST);
+        playingPanel.add(textAndTurnPanel, BorderLayout.NORTH);
+
+        frame.add(playingPanel, "playingPanel");
+        frame.add(spectatePanel, "spectatePanel");
 
 
 
@@ -854,6 +903,15 @@ class board {
 
     }
 
+     public String gridToString(){
+        String str = "";
+         for (int i = 0; i < 8; i++) {
+             for (int j = 0; j < 8; j++) {
+                 str += grid[i][j] + ",";
+             }
+         }
+        return str;
+     }
      void restartGame() {
          frame.setVisible(false);
          board b = new board();

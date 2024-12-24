@@ -8,12 +8,12 @@ class queen extends piece {
             color = "w";
             not = "Q";
             spwan = new int[][] {{7,3}};
-            icon = new ImageIcon(getClass().getResource("/qw.png"));
+            icon = new ImageIcon(getClass().getResource("/main/images/qw.png"));
         }else if(c.equals("b")){
             color = "b";
             not = "q";
             spwan = new int[][] {{0,3}};
-            icon = new ImageIcon(getClass().getResource("/qb.png"));
+            icon = new ImageIcon(getClass().getResource("/main/images/qb.png"));
         }
     }
 

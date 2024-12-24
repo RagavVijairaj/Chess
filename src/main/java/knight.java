@@ -8,12 +8,12 @@ class knight extends piece{
             color = "w";
             not = "N";
             spwan = new int[][] {{7,1}, {7,6}};
-            icon = new ImageIcon(getClass().getResource("/nw.png"));
+            icon = new ImageIcon(getClass().getResource("/main/images/nw.png"));
         }else if(c.equals("b")){
             color = "b";
             not = "n";
             spwan = new int[][] {{0,1}, {0,6}};
-            icon = new ImageIcon(getClass().getResource("/nb.png"));
+            icon = new ImageIcon(getClass().getResource("/main/images/nb.png"));
         }
     }
 
