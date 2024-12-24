@@ -116,22 +116,29 @@ public class Spectate {
 
 
 
-    public void updateSpectatorGrid(String grid){
+    public void updateSpectatorGrid(String grid) {
         String[] peiceArr = grid.split(",");
         for (int i = 0; i < 64; i++) {
-            if(peiceArr[i] != " ") {
+            if (!peiceArr[i].equals(" ")) {
                 for (String id : board.initList) {
                     if (peiceArr[i].equals(board.pieceMap.get(id).not)) {
+                        ImageIcon originalIcon = board.pieceMap.get(id).icon;
+                        int width = viewingButtons[i].getWidth();
+                        int height = viewingButtons[i].getHeight();
 
-                        viewingButtons[i].setIcon(board.pieceMap.get(id).icon);
-
+                        if (width > 0 && height > 0) {
+                            Image resizedImage = originalIcon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+                            ImageIcon resizedIcon = new ImageIcon(resizedImage);
+                            viewingButtons[i].setIcon(resizedIcon);
+                        } else {
+                            viewingButtons[i].setIcon(originalIcon);
+                        }
                     }
                 }
-
             }
         }
-
     }
+
 
     public int getLastCounter() {
         Document lastCounter = counter.find(new Document("type", "counter"))
