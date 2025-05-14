@@ -54,6 +54,8 @@ public class Stream {
                 .append("blackStats", blackStats)
                 .append("version", version + 1));
 
+        version++;
+
         games.updateOne(filter, update);
 
         System.out.println("updating game" + gameId + whitePlayer + blackPlayer + currentState + whiteStats + blackStats);

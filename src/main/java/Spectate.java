@@ -95,7 +95,7 @@ public class Spectate {
             }
         }
             System.out.println("5 sec has passed");
-        }, 0, 5, TimeUnit.SECONDS);
+        }, 0, 1, TimeUnit.SECONDS);
     }
 
     public void updatePanel() {
